@@ -9,7 +9,7 @@ ANSI_RED = "\u001b[31m"
 ANSI_RESET = "\u001b[0m"
 
 def arg_input():
-
+    #command line input
     try:
         arg_in = sys.argv[1]
         if arg_in.split(".")[-1] == "csv":
@@ -18,10 +18,6 @@ def arg_input():
         else:
             print(ANSI_RED + "need .csv file" + ANSI_RESET)
             sys.exit(2)
-
-    except IndexError:
-        print(ANSI_RED + "arg </path/to/your.csv> <filename.xlsx>" + ANSI_RESET)
-        sys.exit(2)
     except FileNotFoundError:
         print(ANSI_RED + "File was not found!" + ANSI_RESET)
         sys.exit(2)
@@ -30,15 +26,12 @@ def arg_input():
 
 
 def arg_output():
-
-    try:
-        arg_out = sys.argv[2]
-    except IndexError:
-        print(ANSI_RED + "arg </path/to/your.csv> <filename.xlsx>" + ANSI_RESET)
+    #guess what
+    arg_out = sys.argv[2]
     return arg_out
 
 def convertcsv(inputcsv, out):
-
+    #converting csv to xlsx
     wb = openpyxl.Workbook()
     ws = wb.active
 
@@ -48,16 +41,22 @@ def convertcsv(inputcsv, out):
             print("empty row")
         else:
             ws.append(row)
-    
     inputcsv.close()
-
     try:
         wb.save(out)
         print(ANSI_GREEN + "success\o/" + ANSI_RESET)
     except NameError:
         sys.exit(2)
 
+def usage():
+    print("Usage: {0} <input file> <output file>".format(sys.argv[0]))
+
 def main():
+    if len(sys.argv) != 3:
+        usage()
+        sys.exit(2)
+
     convertcsv(arg_input(), arg_output())
+
 if __name__ == "__main__":
     main()
